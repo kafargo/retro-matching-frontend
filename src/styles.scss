@@ -1,0 +1,134 @@
+@use '@angular/material' as mat;
+
+@include mat.core();
+
+$theme: mat.define-theme((
+  color: (
+    theme-type: dark,
+    primary: mat.$violet-palette,
+    tertiary: mat.$cyan-palette,
+  ),
+  typography: (
+    brand-family: 'Inter, sans-serif',
+    bold-weight: 900
+  ),
+));
+
+:root {
+  @include mat.all-component-themes($theme);
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: Inter, "Helvetica Neue", sans-serif;
+  background-color: #1a1a2e;
+  color: #e0e0e0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.game-code-badge {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  z-index: 1000;
+  cursor: default;
+  user-select: all;
+}
+
+.page-container {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.sidebar {
+  width: 240px;
+  min-width: 200px;
+  background: rgba(255,255,255,0.05);
+  border-right: 1px solid rgba(255,255,255,0.1);
+  padding: 16px;
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+
+.main-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+  padding-top: 72px; /* room for game-code badge */
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.full-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 24px;
+}
+
+.adjective-banner {
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 24px;
+  padding: 16px 32px;
+  background: linear-gradient(135deg, rgba(103,58,183,0.3), rgba(0,188,212,0.3));
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.15);
+}
+
+.player-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 4px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+
+  .player-name {
+    flex: 1;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .status-icon {
+    font-size: 18px;
+  }
+
+  .connected-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #4caf50;
+    flex-shrink: 0;
+
+    &.disconnected {
+      background: #757575;
+    }
+  }
+}
+
+mat-card {
+  background: rgba(255,255,255,0.06) !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+}
