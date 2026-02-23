@@ -32,7 +32,7 @@ import { GameStateService } from '../../core/services/game-state.service';
       <h1 style="font-size:2.5rem;font-weight:900;letter-spacing:-1px;margin-bottom:8px;">
         Retro Match
       </h1>
-      <p style="opacity:0.5;margin-bottom:40px;">Anonymously match your retrospective cards</p>
+      <p style="opacity:0.5;margin-bottom:40px;">Change up your retro with this apples-to-apples style retro game!</p>
 
       @if (!activePanel()) {
         <div style="display:flex;gap:24px;flex-wrap:wrap;justify-content:center;">
