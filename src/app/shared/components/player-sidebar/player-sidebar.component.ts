@@ -12,8 +12,10 @@ import { GameStateService } from '../../../core/services/game-state.service';
   template: `
     <div class="sidebar-header">Players</div>
     @for (player of players(); track player.id) {
-      <div class="player-item">
-        <div class="connected-dot" [class.disconnected]="!player.is_connected"></div>
+      <div class="player-item" [class.disconnected-player]="!player.is_connected">
+        <div class="connected-dot"
+             [class.disconnected]="!player.is_connected"
+             [matTooltip]="player.is_connected ? 'Connected' : 'Disconnected'"></div>
         <span class="player-name">{{ player.display_name }}</span>
         @if (player.role === 'spectator') {
           <mat-icon class="status-icon" matTooltip="Spectator" style="font-size:16px;opacity:0.5;">visibility</mat-icon>
@@ -49,6 +51,17 @@ import { GameStateService } from '../../../core/services/game-state.service';
       letter-spacing: 0.1em;
       opacity: 0.5;
       margin-bottom: 8px;
+    }
+    .disconnected-player {
+      opacity: 0.45;
+    }
+    .connected-dot.disconnected {
+      background-color: #f44336;
+      animation: pulse-disconnect 1.5s ease-in-out infinite;
+    }
+    @keyframes pulse-disconnect {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
     }
   `],
 })
