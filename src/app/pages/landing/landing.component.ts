@@ -212,7 +212,16 @@ export class LandingComponent {
         stateResp.my_cards ?? []
       );
 
-      this.router.navigate(['/game', gameCode!.toUpperCase(), 'lobby']);
+      // Navigate to the correct phase (lobby for new games, or current phase on rejoin)
+      const phase = stateResp.game.phase;
+      const phaseRoutes: Record<string, string> = {
+        lobby: 'lobby',
+        card_creation: 'card-creation',
+        playing: 'playing',
+        finished: 'finished',
+      };
+      const route = phaseRoutes[phase] ?? 'lobby';
+      this.router.navigate(['/game', gameCode!.toUpperCase(), route]);
     } catch (err: any) {
       const msg = err?.error?.message ?? 'Failed to join game.';
       this.snack.open(msg, 'Dismiss', { duration: 4000 });
