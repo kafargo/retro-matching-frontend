@@ -1,10 +1,16 @@
-export type GamePhase = 'lobby' | 'card_creation' | 'playing' | 'final_round' | 'finished';
-export type RoundPhase = 'submitting' | 'revealed' | 'complete';
+export type GamePhase = 'lobby' | 'card_creation' | 'playing' | 'finished';
+export type RoundPhase = 'submitting' | 'voting' | 'complete';
 
 export interface SubmissionStatus {
   player_id: number;
   display_name: string;
   has_submitted: boolean;
+}
+
+export interface VoteStatus {
+  player_id: number;
+  display_name: string;
+  has_voted: boolean;
 }
 
 export interface RevealedSubmission {
@@ -17,14 +23,14 @@ export interface RevealedSubmission {
 export interface CurrentRound {
   id: number;
   round_number: number;
-  judge_id: number | null;
   adjective: string;
   phase: RoundPhase;
-  is_final_round: boolean;
   submission_status: SubmissionStatus[];
   revealed_submissions: RevealedSubmission[] | null;
-  winner_id: number | null;
-  winning_card_id: number | null;
+  vote_status: VoteStatus[] | null;
+  winning_card_ids: number[];
+  winner_player_ids: number[];
+  total_rounds: number;
 }
 
 export interface PlayerSummary {

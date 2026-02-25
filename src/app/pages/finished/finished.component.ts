@@ -55,6 +55,7 @@ import { GameCodeBadgeComponent } from '../../shared/components/game-code-badge/
       </mat-card>
 
       <div style="margin-top:32px;display:flex;gap:16px;flex-wrap:wrap;justify-content:center;">
+        <button mat-stroked-button (click)="onLeave()">Leave Game</button>
         @if (gameState.isCreator()) {
           <button
             mat-flat-button
@@ -65,11 +66,9 @@ import { GameCodeBadgeComponent } from '../../shared/components/game-code-badge/
             @if (isLoading()) {
               <mat-spinner diameter="20" style="display:inline-block;vertical-align:middle;"></mat-spinner>
             } @else {
-              Finish Game
+              End &amp; Delete Game
             }
           </button>
-        } @else {
-          <button mat-stroked-button (click)="onLeave()">Leave Game</button>
         }
       </div>
     </div>

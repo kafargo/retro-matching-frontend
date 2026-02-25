@@ -18,7 +18,6 @@ const PHASE_TO_ROUTE: Record<GamePhase, string> = {
   lobby: 'lobby',
   card_creation: 'card-creation',
   playing: 'playing',
-  final_round: 'final-round',
   finished: 'finished',
 };
 
@@ -44,11 +43,6 @@ export class GameStateService {
 
   // --- Computed signals ---
   readonly currentPhase = computed(() => this._gameState()?.phase ?? null);
-  readonly isJudge = computed(
-    () =>
-      this._gameState()?.current_round?.judge_id != null &&
-      this._gameState()?.current_round?.judge_id === this._myPlayer()?.id
-  );
   readonly isCreator = computed(
     () =>
       this._myPlayer()?.id != null &&

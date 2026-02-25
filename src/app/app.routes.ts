@@ -33,14 +33,6 @@ export const routes: Routes = [
           import('./pages/playing/playing.component').then((m) => m.PlayingComponent),
       },
       {
-        path: 'final-round',
-        canActivate: [phaseGuard('final_round')],
-        loadComponent: () =>
-          import('./pages/final-round/final-round.component').then(
-            (m) => m.FinalRoundComponent
-          ),
-      },
-      {
         path: 'finished',
         canActivate: [phaseGuard('finished')],
         loadComponent: () =>

@@ -7,7 +7,6 @@ const PHASE_TO_ROUTE: Record<GamePhase, string> = {
   lobby: 'lobby',
   card_creation: 'card-creation',
   playing: 'playing',
-  final_round: 'final-round',
   finished: 'finished',
 };
 

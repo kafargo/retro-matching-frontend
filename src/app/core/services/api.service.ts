@@ -81,30 +81,29 @@ export class ApiService {
     );
   }
 
-  /** Judge picks who winning submission. */
-  pickWinner(
-    code: string,
-    roundId: number,
-    submissionId: number,
-    token: string
-  ): Observable<{ winner_player_id: number; final_round_triggered: boolean }> {
-    return this.http.post<{ winner_player_id: number; final_round_triggered: boolean }>(
-      `${this.base}/api/games/${code}/rounds/${roundId}/pick-winner`,
-      { submission_id: submissionId },
-      { headers: this._auth(token) }
-    );
-  }
-
-  /** Vote in the final round. */
+  /** Vote for a card during the voting phase of any round. */
   vote(
     code: string,
     roundId: number,
     cardId: number,
     token: string
-  ): Observable<{ voted: boolean; game_finished: boolean }> {
-    return this.http.post<{ voted: boolean; game_finished: boolean }>(
+  ): Observable<{ voted: boolean; round_complete: boolean }> {
+    return this.http.post<{ voted: boolean; round_complete: boolean }>(
       `${this.base}/api/games/${code}/rounds/${roundId}/vote`,
       { card_id: cardId },
+      { headers: this._auth(token) }
+    );
+  }
+
+  /** Host advances to the next round or finishes the game. */
+  advanceRound(
+    code: string,
+    roundId: number,
+    token: string
+  ): Observable<{ game_finished: boolean; next_round_id?: number }> {
+    return this.http.post<{ game_finished: boolean; next_round_id?: number }>(
+      `${this.base}/api/games/${code}/rounds/${roundId}/advance`,
+      {},
       { headers: this._auth(token) }
     );
   }
