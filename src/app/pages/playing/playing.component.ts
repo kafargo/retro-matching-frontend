@@ -51,7 +51,7 @@ const CARD_TYPE_COLORS: Record<string, string> = {
         @if (currentRound()) {
           <div class="adjective-banner">
             Round {{ currentRound()!.round_number }} of {{ currentRound()!.total_rounds }}
-            — Be the most
+            — What's the most
             <span style="color:#ffd700;"> {{ currentRound()!.adjective }}</span>
           </div>
 
