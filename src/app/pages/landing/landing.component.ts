@@ -131,6 +131,10 @@ import { GameStateService } from '../../core/services/game-state.service';
         </mat-card>
       }
     </div>
+
+    <div style="position:fixed;bottom:16px;left:0;right:0;text-align:center;opacity:0.5;font-size:0.85rem;">
+      New to the game? <a href="https://www.youtube.com/watch?v=-k1uaXFupHI" target="_blank" rel="noopener noreferrer" style="color:inherit;">Watch how to play</a>
+    </div>
   `,
 })
 export class LandingComponent {
