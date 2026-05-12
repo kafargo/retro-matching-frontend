@@ -91,6 +91,15 @@ const CARD_GROUPS: CardGroup[] = [
               </span>
             </mat-card-content>
           </mat-card>
+        } @else {
+          <mat-card style="max-width:640px;margin-bottom:20px;background:rgba(33,150,243,0.08);border-left:3px solid #2196f3;">
+            <mat-card-content style="display:flex;gap:10px;align-items:flex-start;padding:12px 16px;">
+              <mat-icon style="color:#2196f3;flex-shrink:0;">info</mat-icon>
+              <span style="font-size:0.9rem;line-height:1.4;">
+                <strong>Note:</strong> if you disconnect, you can reconnect at any time using the same name and game code.
+              </span>
+            </mat-card-content>
+          </mat-card>
         }
         @if (gameState.isSpectator()) {
           <h2>Card Creation Phase</h2>
