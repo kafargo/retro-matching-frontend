@@ -55,7 +55,7 @@ import { PlayerSummary, SubmissionStatus, VoteStatus, GamePhase, RoundPhase } fr
             matTooltip="Remove player"
             (click)="removePlayer.emit(player.id)"
           >
-            <mat-icon style="font-size:18px;color:#f44336;">person_remove</mat-icon>
+            <mat-icon style="font-size:18px;color:#f44336;">delete</mat-icon>
           </button>
         }
       </div>

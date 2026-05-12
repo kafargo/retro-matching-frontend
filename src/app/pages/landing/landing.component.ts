@@ -191,7 +191,7 @@ export class LandingComponent {
         stateResp.my_cards ?? []
       );
 
-      this.router.navigate(['/game', response.game_code, 'lobby']);
+      this.router.navigate(['/game', response.game_code, 'card-creation']);
     } catch (err: any) {
       const msg = err?.error?.message ?? 'Failed to create game.';
       this.snack.open(msg, 'Dismiss', { duration: 4000 });
@@ -225,15 +225,16 @@ export class LandingComponent {
         stateResp.my_cards ?? []
       );
 
-      // Navigate to the correct phase (lobby for new games, or current phase on rejoin)
+      // Navigate to the correct phase. New games and rejoins during card_creation
+      // both land on the card-creation screen; lobby is folded into card-creation.
       const phase = stateResp.game.phase;
       const phaseRoutes: Record<string, string> = {
-        lobby: 'lobby',
+        lobby: 'card-creation',
         card_creation: 'card-creation',
         playing: 'playing',
         finished: 'finished',
       };
-      const route = phaseRoutes[phase] ?? 'lobby';
+      const route = phaseRoutes[phase] ?? 'card-creation';
       this.router.navigate(['/game', gameCode!.toUpperCase(), route]);
     } catch (err: any) {
       const msg = err?.error?.message ?? 'Failed to join game.';

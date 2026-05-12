@@ -9,12 +9,14 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatIconModule } from '@angular/material/icon';
+import { MatDialog } from '@angular/material/dialog';
 import { firstValueFrom } from 'rxjs';
 import { GameStateService } from '../../core/services/game-state.service';
 import { ApiService } from '../../core/services/api.service';
 import { SessionService } from '../../core/services/session.service';
 import { PlayerSidebarComponent } from '../../shared/components/player-sidebar/player-sidebar.component';
 import { GameCodeBadgeComponent } from '../../shared/components/game-code-badge/game-code-badge.component';
+import { RulesDialogComponent } from './rules-dialog.component';
 
 interface CardGroup {
   type: 'start' | 'stop' | 'continue';
@@ -136,10 +138,33 @@ export class CardCreationComponent {
   private readonly session = inject(SessionService);
   private readonly snack = inject(MatSnackBar);
   private readonly fb = inject(FormBuilder);
+  private readonly dialog = inject(MatDialog);
 
   readonly cardGroups = CARD_GROUPS;
   readonly isLoading = signal(false);
   readonly isSubmitted = signal(false);
+
+  constructor() {
+    // Show the rules modal once per game per browser session. The dialog can
+    // only be dismissed by clicking "Let's create cards" (disableClose: true).
+    const code = this.session.get()?.gameCode;
+    const seenKey = code ? `rules_seen_${code}` : null;
+    let alreadySeen = false;
+    try {
+      alreadySeen = seenKey ? sessionStorage.getItem(seenKey) === '1' : false;
+    } catch {}
+    if (!alreadySeen) {
+      this.dialog.open(RulesDialogComponent, {
+        disableClose: true,
+        width: '600px',
+        maxWidth: '90vw',
+        autoFocus: 'dialog',
+      });
+      if (seenKey) {
+        try { sessionStorage.setItem(seenKey, '1'); } catch {}
+      }
+    }
+  }
 
   readonly cardsForm = this.fb.group({
     start_0: ['', [Validators.required, Validators.maxLength(500)]],
@@ -196,6 +221,9 @@ export class CardCreationComponent {
   async onBeginGame(): Promise<void> {
     const sess = this.session.get();
     if (!sess) return;
+    if (!confirm('Begin the game? Once started, no new players will be able to join.')) {
+      return;
+    }
     this.isLoading.set(true);
     try {
       await firstValueFrom(this.api.beginGame(sess.gameCode, sess.sessionToken));

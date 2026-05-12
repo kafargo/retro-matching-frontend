@@ -13,12 +13,6 @@ export const routes: Routes = [
     canActivate: [gameAuthGuard],
     children: [
       {
-        path: 'lobby',
-        canActivate: [phaseGuard('lobby')],
-        loadComponent: () =>
-          import('./pages/lobby/lobby.component').then((m) => m.LobbyComponent),
-      },
-      {
         path: 'card-creation',
         canActivate: [phaseGuard('card_creation')],
         loadComponent: () =>
@@ -38,7 +32,7 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./pages/finished/finished.component').then((m) => m.FinishedComponent),
       },
-      { path: '', redirectTo: 'lobby', pathMatch: 'full' },
+      { path: '', redirectTo: 'card-creation', pathMatch: 'full' },
     ],
   },
   { path: '**', redirectTo: '' },

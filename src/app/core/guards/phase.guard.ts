@@ -3,8 +3,10 @@ import { CanActivateFn, Router, ActivatedRouteSnapshot } from '@angular/router';
 import { GameStateService } from '../services/game-state.service';
 import { GamePhase } from '../models/game.model';
 
+// Lobby is no longer a user-facing phase — any game still flagged as 'lobby'
+// (legacy or in-flight) routes to card-creation where it'll be progressed.
 const PHASE_TO_ROUTE: Record<GamePhase, string> = {
-  lobby: 'lobby',
+  lobby: 'card-creation',
   card_creation: 'card-creation',
   playing: 'playing',
   finished: 'finished',

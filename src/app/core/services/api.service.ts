@@ -35,13 +35,6 @@ export class ApiService {
     });
   }
 
-  /** Start game (lobby → card_creation). Creator only. */
-  startGame(code: string, token: string): Observable<{ phase: string }> {
-    return this.http.post<{ phase: string }>(`${this.base}/api/games/${code}/start`, {}, {
-      headers: this._auth(token),
-    });
-  }
-
   /** Submit 6 cards. */
   submitCards(
     code: string,

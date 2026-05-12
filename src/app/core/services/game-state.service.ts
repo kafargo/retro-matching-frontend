@@ -15,7 +15,7 @@ import { SocketService } from './socket.service';
 import { environment } from '../../../environments/environment';
 
 const PHASE_TO_ROUTE: Record<GamePhase, string> = {
-  lobby: 'lobby',
+  lobby: 'card-creation',
   card_creation: 'card-creation',
   playing: 'playing',
   finished: 'finished',
