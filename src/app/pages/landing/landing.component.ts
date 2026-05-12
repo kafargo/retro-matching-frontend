@@ -147,6 +147,15 @@ export class LandingComponent {
   readonly activePanel = signal<null | 'create' | 'join'>(null);
   readonly isLoading = signal(false);
 
+  constructor() {
+    try {
+      if (sessionStorage.getItem('kicked_from_game') === '1') {
+        sessionStorage.removeItem('kicked_from_game');
+        this.snack.open('The host removed you from the game.', 'Dismiss', { duration: 5000 });
+      }
+    } catch {}
+  }
+
   readonly createForm = this.fb.group({
     displayName: ['', [Validators.required, Validators.maxLength(50)]],
     role: ['player'],

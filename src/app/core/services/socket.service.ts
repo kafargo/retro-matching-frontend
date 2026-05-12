@@ -6,6 +6,7 @@ import {
   YourCardsUpdatedEvent,
   GameFinishedEvent,
   PlayerConnectionChangedEvent,
+  PlayerRemovedEvent,
 } from '../models/game.model';
 import { environment } from '../../../environments/environment';
 
@@ -21,6 +22,7 @@ export class SocketService implements OnDestroy {
   private readonly yourCardsUpdated$ = new Subject<YourCardsUpdatedEvent>();
   private readonly gameFinished$ = new Subject<GameFinishedEvent>();
   private readonly playerConnectionChanged$ = new Subject<PlayerConnectionChangedEvent>();
+  private readonly playerRemoved$ = new Subject<PlayerRemovedEvent>();
 
   /** Connect the socket and join the game room. */
   connect(gameCode: string, sessionToken: string): void {
@@ -39,6 +41,7 @@ export class SocketService implements OnDestroy {
     this.socket.on('your_cards_updated', (data) => this.yourCardsUpdated$.next(data));
     this.socket.on('game_finished', (data) => this.gameFinished$.next(data));
     this.socket.on('player_connection_changed', (data) => this.playerConnectionChanged$.next(data));
+    this.socket.on('player_removed', (data) => this.playerRemoved$.next(data));
 
     this.socket.on('connect', () => {
       this.joinRoom(gameCode, sessionToken);
@@ -77,11 +80,16 @@ export class SocketService implements OnDestroy {
     return this.playerConnectionChanged$.asObservable();
   }
 
+  onPlayerRemoved(): Observable<PlayerRemovedEvent> {
+    return this.playerRemoved$.asObservable();
+  }
+
   ngOnDestroy(): void {
     this.socket?.disconnect();
     this.gameStateUpdated$.complete();
     this.yourCardsUpdated$.complete();
     this.gameFinished$.complete();
     this.playerConnectionChanged$.complete();
+    this.playerRemoved$.complete();
   }
 }

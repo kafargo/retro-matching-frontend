@@ -102,4 +102,9 @@ export interface PlayerConnectionChangedEvent {
   is_connected: boolean;
 }
 
+export interface PlayerRemovedEvent {
+  type: 'player_removed';
+  player_id: number;
+}
+
 export type Card = import('./card.model').Card;

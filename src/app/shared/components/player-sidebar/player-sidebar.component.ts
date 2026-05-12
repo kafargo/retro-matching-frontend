@@ -1,13 +1,14 @@
-import { Component, input } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatButtonModule } from '@angular/material/button';
 import { PlayerSummary, SubmissionStatus, VoteStatus, GamePhase, RoundPhase } from '../../../core/models/game.model';
 
 @Component({
   selector: 'app-player-sidebar',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatTooltipModule],
+  imports: [CommonModule, MatIconModule, MatTooltipModule, MatButtonModule],
   template: `
     <div class="sidebar-header">Players</div>
     @for (player of players(); track player.id) {
@@ -46,6 +47,17 @@ import { PlayerSummary, SubmissionStatus, VoteStatus, GamePhase, RoundPhase } fr
             <mat-icon class="status-icon" style="color:#4caf50;" matTooltip="Round complete">check_circle</mat-icon>
           }
         }
+        @if (canRemove() && player.id !== creatorId()) {
+          <button
+            mat-icon-button
+            type="button"
+            class="remove-player-btn"
+            matTooltip="Remove player"
+            (click)="removePlayer.emit(player.id)"
+          >
+            <mat-icon style="font-size:18px;color:#f44336;">person_remove</mat-icon>
+          </button>
+        }
       </div>
     }
   `,
@@ -79,6 +91,13 @@ import { PlayerSummary, SubmissionStatus, VoteStatus, GamePhase, RoundPhase } fr
       0%, 100% { opacity: 0.5; }
       50% { opacity: 1; }
     }
+    .remove-player-btn {
+      width: 28px;
+      height: 28px;
+      line-height: 28px;
+      padding: 0;
+      margin-left: 4px;
+    }
   `],
 })
 export class PlayerSidebarComponent {
@@ -87,6 +106,9 @@ export class PlayerSidebarComponent {
   readonly submissionStatus = input<SubmissionStatus[]>([]);
   readonly voteStatus = input<VoteStatus[]>([]);
   readonly roundPhase = input<RoundPhase>('submitting');
+  readonly canRemove = input<boolean>(false);
+  readonly creatorId = input<number | null>(null);
+  readonly removePlayer = output<number>();
 
   hasSubmitted(playerId: number): boolean {
     return this.submissionStatus().some((s) => s.player_id === playerId && s.has_submitted);

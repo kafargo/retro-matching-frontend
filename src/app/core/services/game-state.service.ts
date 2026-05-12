@@ -84,6 +84,22 @@ export class GameStateService {
         this._syncMyPlayer(updated);
       });
 
+    this.socketSvc
+      .onPlayerRemoved()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((event) => {
+        // Use the session's player id, not _myPlayer, because game_state_updated
+        // may have already cleared _myPlayer (it could arrive before this event).
+        const myId = this._myPlayer()?.id ?? this.session.get()?.playerId ?? null;
+        if (myId != null && event.player_id === myId) {
+          try {
+            sessionStorage.setItem('kicked_from_game', '1');
+          } catch {}
+          this.reset();
+          this.router.navigate(['/']);
+        }
+      });
+
     // Auto-navigate when phase changes
     effect(() => {
       const phase = this.currentPhase();

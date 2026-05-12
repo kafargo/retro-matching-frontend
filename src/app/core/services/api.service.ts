@@ -108,6 +108,18 @@ export class ApiService {
     );
   }
 
+  /** Remove a player during card_creation. Creator only. */
+  removePlayer(
+    code: string,
+    playerId: number,
+    token: string
+  ): Observable<{ removed_player_id: number }> {
+    return this.http.delete<{ removed_player_id: number }>(
+      `${this.base}/api/games/${code}/players/${playerId}`,
+      { headers: this._auth(token) }
+    );
+  }
+
   /** Delete game. Creator only. */
   finishGame(code: string, token: string): Observable<{ deleted: boolean }> {
     return this.http.post<{ deleted: boolean }>(`${this.base}/api/games/${code}/finish`, {}, {

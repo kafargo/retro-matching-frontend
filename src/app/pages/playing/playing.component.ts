@@ -189,7 +189,7 @@ const CARD_TYPE_COLORS: Record<string, string> = {
               }
             </div>
 
-            @if (gameState.isCreator()) {
+            @if (canAdvance()) {
               <div style="text-align:center;margin-top:32px;">
                 <button
                   mat-flat-button
@@ -271,6 +271,20 @@ export class PlayingComponent {
     return winnerIds
       .map(id => players.find(p => p.id === id)?.display_name)
       .filter((name): name is string => !!name);
+  });
+
+  // The creator normally controls round advancement, but if they've disconnected
+  // we let any connected non-spectator player advance so the game doesn't stall.
+  // Mirrors the backend hand-off in round_service.advance_round.
+  readonly canAdvance = computed(() => {
+    if (this.gameState.isCreator()) return true;
+    const state = this.gameState.gameState();
+    const me = this.gameState.myPlayer();
+    if (!state || !me) return false;
+    const creator = state.players.find((p) => p.id === state.creator_id);
+    const creatorConnected = !!creator && creator.is_connected;
+    if (creatorConnected) return false;
+    return me.role === 'player' && me.is_connected;
   });
 
   readonly isLastRound = computed(() => {

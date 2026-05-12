@@ -54,6 +54,9 @@ const CARD_GROUPS: CardGroup[] = [
         <app-player-sidebar
           [players]="gameState.gameState()?.players ?? []"
           [phase]="'card_creation'"
+          [canRemove]="gameState.isCreator()"
+          [creatorId]="gameState.gameState()?.creator_id ?? null"
+          (removePlayer)="onRemovePlayer($event)"
         />
       </nav>
 
@@ -144,9 +147,10 @@ export class CardCreationComponent {
 
   allPlayersReady(): boolean {
     const players = this.gameState.gameState()?.players ?? [];
-    return players
-      .filter((p) => p.role === 'player')
-      .every((p) => p.is_ready);
+    // Mirror the backend /begin gate: only connected non-spectator players count,
+    // and we need at least 2 of them so a single connected player can't start alone.
+    const connected = players.filter((p) => p.role === 'player' && p.is_connected);
+    return connected.length >= 2 && connected.every((p) => p.is_ready);
   }
 
   async onSubmitCards(): Promise<void> {
@@ -190,6 +194,23 @@ export class CardCreationComponent {
       this.snack.open(err?.error?.message ?? 'Failed to begin game.', 'Dismiss', { duration: 4000 });
     } finally {
       this.isLoading.set(false);
+    }
+  }
+
+  async onRemovePlayer(playerId: number): Promise<void> {
+    const sess = this.session.get();
+    if (!sess) return;
+    const players = this.gameState.gameState()?.players ?? [];
+    const target = players.find((p) => p.id === playerId);
+    const name = target?.display_name ?? 'this player';
+    if (!confirm(`Remove ${name} from the game? They will be sent back to the home screen.`)) {
+      return;
+    }
+    try {
+      await firstValueFrom(this.api.removePlayer(sess.gameCode, playerId, sess.sessionToken));
+      // Roster will refresh via game_state_updated broadcast.
+    } catch (err: any) {
+      this.snack.open(err?.error?.message ?? 'Failed to remove player.', 'Dismiss', { duration: 4000 });
     }
   }
 }
