@@ -79,6 +79,9 @@ export class LobbyComponent {
   async onStartGame(): Promise<void> {
     const sess = this.session.get();
     if (!sess) return;
+    if (!confirm('Start the game? Once started, no new players will be able to join.')) {
+      return;
+    }
     this.isLoading.set(true);
     try {
       await firstValueFrom(this.api.startGame(sess.gameCode, sess.sessionToken));

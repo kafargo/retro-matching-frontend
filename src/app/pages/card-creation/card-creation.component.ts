@@ -61,6 +61,16 @@ const CARD_GROUPS: CardGroup[] = [
       </nav>
 
       <main class="main-content">
+        @if (gameState.isCreator()) {
+          <mat-card style="max-width:640px;margin-bottom:20px;background:rgba(33,150,243,0.08);border-left:3px solid #2196f3;">
+            <mat-card-content style="display:flex;gap:10px;align-items:flex-start;padding:12px 16px;">
+              <mat-icon style="color:#2196f3;flex-shrink:0;">info</mat-icon>
+              <span style="font-size:0.9rem;line-height:1.4;">
+                <strong>Note:</strong> if a player disconnects, they can reconnect at anytime using their same username and game code. The game cannot start with disconnected players!
+              </span>
+            </mat-card-content>
+          </mat-card>
+        }
         @if (gameState.isSpectator()) {
           <h2>Card Creation Phase</h2>
           <p style="opacity:0.6;">You are a spectator. Waiting for all players to complete their cards...</p>
