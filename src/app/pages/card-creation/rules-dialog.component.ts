@@ -15,8 +15,8 @@ import { MatButtonModule } from '@angular/material/button';
       </p>
       <ol class="rules-list">
         <li>
-          Each player creates 6 cards: two things they liked, two things they want to stop,
-          two things they want to continue, and two things to start.
+          Each player creates 6 cards: two things they want to start, two things they want to
+          stop, and two things they want to continue.
         </li>
         <li>
           Once all players have created cards, they will be randomly shuffled and

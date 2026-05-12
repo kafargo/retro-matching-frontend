@@ -64,6 +64,25 @@ const CARD_GROUPS: CardGroup[] = [
 
       <main class="main-content">
         @if (gameState.isCreator()) {
+          <mat-card style="max-width:640px;margin-bottom:16px;background:linear-gradient(135deg,rgba(76,175,80,0.16),rgba(76,175,80,0.06));border-left:3px solid #4caf50;">
+            <mat-card-content style="display:flex;gap:16px;align-items:center;padding:14px 18px;flex-wrap:wrap;">
+              <mat-icon style="color:#4caf50;flex-shrink:0;font-size:28px;width:28px;height:28px;">groups</mat-icon>
+              <div style="flex:1;min-width:200px;">
+                <div style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.08em;opacity:0.7;margin-bottom:2px;">
+                  Share this game code so others can join
+                </div>
+                <div style="font-family:'JetBrains Mono','Courier New',monospace;font-size:1.9rem;font-weight:700;letter-spacing:0.18em;color:#4caf50;">
+                  {{ gameState.gameCode() }}
+                </div>
+              </div>
+              <button mat-flat-button color="primary" type="button" (click)="onCopyGameCode()" [disabled]="!gameState.gameCode()">
+                <mat-icon style="font-size:18px;width:18px;height:18px;vertical-align:middle;margin-right:4px;">
+                  {{ codeCopied() ? 'check' : 'content_copy' }}
+                </mat-icon>
+                {{ codeCopied() ? 'Copied!' : 'Copy code' }}
+              </button>
+            </mat-card-content>
+          </mat-card>
           <mat-card style="max-width:640px;margin-bottom:20px;background:rgba(33,150,243,0.08);border-left:3px solid #2196f3;">
             <mat-card-content style="display:flex;gap:10px;align-items:flex-start;padding:12px 16px;">
               <mat-icon style="color:#2196f3;flex-shrink:0;">info</mat-icon>
@@ -143,6 +162,7 @@ export class CardCreationComponent {
   readonly cardGroups = CARD_GROUPS;
   readonly isLoading = signal(false);
   readonly isSubmitted = signal(false);
+  readonly codeCopied = signal(false);
 
   constructor() {
     // Show the rules modal once per game per browser session. The dialog can
@@ -232,6 +252,18 @@ export class CardCreationComponent {
       this.snack.open(err?.error?.message ?? 'Failed to begin game.', 'Dismiss', { duration: 4000 });
     } finally {
       this.isLoading.set(false);
+    }
+  }
+
+  async onCopyGameCode(): Promise<void> {
+    const code = this.gameState.gameCode();
+    if (!code) return;
+    try {
+      await navigator.clipboard.writeText(code);
+      this.codeCopied.set(true);
+      setTimeout(() => this.codeCopied.set(false), 2000);
+    } catch {
+      this.snack.open(`Couldn't copy automatically — game code: ${code}`, 'Dismiss', { duration: 5000 });
     }
   }
 
