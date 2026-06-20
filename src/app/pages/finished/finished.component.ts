@@ -27,34 +27,36 @@ import { GameCodeBadgeComponent } from '../../shared/components/game-code-badge/
   template: `
     <app-game-code-badge />
 
-    <div class="full-center">
-      <h1 style="font-size:2.5rem;font-weight:900;margin-bottom:8px;">Game Over!</h1>
-      <p style="opacity:0.6;margin-bottom:32px;">Final Scores</p>
+    <div class="full-center finished-page">
+      <header class="finished-header">
+        <h1>Game Over!</h1>
+        <p>Final Scores</p>
+      </header>
 
-      <mat-card style="min-width:320px;max-width:480px;width:100%;">
-        <mat-card-content style="padding:16px;">
+      <mat-card class="score-card">
+        <mat-card-content>
           @for (player of sortedPlayers(); track player.id; let i = $index) {
-            <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.08);">
-              <span style="font-size:1.3rem;font-weight:700;width:32px;text-align:center;opacity:0.5;">
+            <div class="score-row">
+              <span class="rank">
                 {{ i + 1 }}
               </span>
               @if (i === 0) {
-                <mat-icon style="color:#ffd700;">emoji_events</mat-icon>
+                <mat-icon class="trophy gold">emoji_events</mat-icon>
               } @else if (i === 1) {
-                <mat-icon style="color:#c0c0c0;">emoji_events</mat-icon>
+                <mat-icon class="trophy silver">emoji_events</mat-icon>
               } @else if (i === 2) {
-                <mat-icon style="color:#cd7f32;">emoji_events</mat-icon>
+                <mat-icon class="trophy bronze">emoji_events</mat-icon>
               } @else {
-                <span style="width:24px;"></span>
+                <span class="trophy-spacer"></span>
               }
-              <span style="flex:1;font-size:1.1rem;">{{ player.display_name }}</span>
-              <span style="font-size:1.4rem;font-weight:700;color:#ffd700;">{{ player.score }}</span>
+              <span class="player-name">{{ player.display_name }}</span>
+              <span class="score">{{ player.score }}</span>
             </div>
           }
         </mat-card-content>
       </mat-card>
 
-      <div style="margin-top:32px;display:flex;gap:16px;flex-wrap:wrap;justify-content:center;">
+      <div class="finished-actions">
         <button mat-stroked-button (click)="onLeave()">Leave Game</button>
         @if (gameState.isCreator()) {
           <button
@@ -64,7 +66,7 @@ import { GameCodeBadgeComponent } from '../../shared/components/game-code-badge/
             [disabled]="isLoading()"
           >
             @if (isLoading()) {
-              <mat-spinner diameter="20" style="display:inline-block;vertical-align:middle;"></mat-spinner>
+              <mat-spinner diameter="20" class="inline-spinner"></mat-spinner>
             } @else {
               End &amp; Delete Game
             }
@@ -73,6 +75,131 @@ import { GameCodeBadgeComponent } from '../../shared/components/game-code-badge/
       </div>
     </div>
   `,
+  styles: [`
+    .finished-page {
+      text-align: center;
+    }
+
+    .finished-header {
+      margin-bottom: 32px;
+    }
+
+    .finished-header h1 {
+      margin: 0 0 8px;
+      font-size: clamp(2rem, 8vw, 2.5rem);
+      font-weight: 900;
+      line-height: 1.05;
+    }
+
+    .finished-header p {
+      margin: 0;
+      color: var(--muted-text);
+    }
+
+    .score-card {
+      width: min(100%, 480px);
+      min-width: 0;
+      text-align: left;
+    }
+
+    .score-card mat-card-content {
+      padding: 16px;
+    }
+
+    .score-row {
+      display: grid;
+      grid-template-columns: 32px 24px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .score-row:last-child {
+      border-bottom: 0;
+    }
+
+    .rank {
+      width: 32px;
+      text-align: center;
+      font-size: 1.3rem;
+      font-weight: 700;
+      opacity: 0.5;
+    }
+
+    .trophy-spacer {
+      width: 24px;
+      height: 24px;
+    }
+
+    .gold {
+      color: #ffd700;
+    }
+
+    .silver {
+      color: #c0c0c0;
+    }
+
+    .bronze {
+      color: #cd7f32;
+    }
+
+    .player-name {
+      min-width: 0;
+      font-size: 1.1rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .score {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #ffd700;
+    }
+
+    .finished-actions {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+      width: min(100%, 480px);
+      margin-top: 32px;
+    }
+
+    .inline-spinner {
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    @media (max-width: 420px) {
+      .score-card mat-card-content {
+        padding: 12px;
+      }
+
+      .score-row {
+        grid-template-columns: 28px 24px minmax(0, 1fr) auto;
+        gap: 8px;
+      }
+
+      .rank {
+        width: 28px;
+        font-size: 1.1rem;
+      }
+
+      .player-name {
+        font-size: 1rem;
+      }
+
+      .score {
+        font-size: 1.2rem;
+      }
+
+      .finished-actions button {
+        flex: 1 1 150px;
+      }
+    }
+  `],
 })
 export class FinishedComponent {
   readonly gameState = inject(GameStateService);

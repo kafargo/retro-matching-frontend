@@ -64,46 +64,68 @@ const CARD_GROUPS: CardGroup[] = [
 
       <main class="main-content">
         @if (gameState.isCreator()) {
-          <mat-card style="max-width:640px;margin-bottom:16px;background:linear-gradient(135deg,rgba(76,175,80,0.16),rgba(76,175,80,0.06));border-left:3px solid #4caf50;">
-            <mat-card-content style="display:flex;gap:16px;align-items:center;padding:14px 18px;flex-wrap:wrap;">
-              <mat-icon style="color:#4caf50;flex-shrink:0;font-size:28px;width:28px;height:28px;">groups</mat-icon>
-              <div style="flex:1;min-width:200px;">
-                <div style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.08em;opacity:0.7;margin-bottom:2px;">
+          <mat-card class="share-card">
+            <mat-card-content>
+              <mat-icon class="share-icon">groups</mat-icon>
+              <div class="share-copy">
+                <div class="share-label">
                   Share this game code so others can join
                 </div>
-                <div style="font-family:'JetBrains Mono','Courier New',monospace;font-size:1.9rem;font-weight:700;letter-spacing:0.18em;color:#4caf50;">
+                <div class="share-code">
                   {{ gameState.gameCode() }}
                 </div>
               </div>
               <button mat-flat-button color="primary" type="button" (click)="onCopyGameCode()" [disabled]="!gameState.gameCode()">
-                <mat-icon style="font-size:18px;width:18px;height:18px;vertical-align:middle;margin-right:4px;">
+                <mat-icon class="button-icon">
                   {{ codeCopied() ? 'check' : 'content_copy' }}
                 </mat-icon>
                 {{ codeCopied() ? 'Copied!' : 'Copy code' }}
               </button>
             </mat-card-content>
           </mat-card>
-          <mat-card style="max-width:640px;margin-bottom:20px;background:rgba(33,150,243,0.08);border-left:3px solid #2196f3;">
-            <mat-card-content style="display:flex;gap:10px;align-items:flex-start;padding:12px 16px;">
-              <mat-icon style="color:#2196f3;flex-shrink:0;">info</mat-icon>
-              <span style="font-size:0.9rem;line-height:1.4;">
-                <strong>Note:</strong> if a player disconnects, they can reconnect at anytime using their same username and game code. The game cannot start with disconnected players!
-              </span>
-            </mat-card-content>
-          </mat-card>
+          @if (!disconnectNoteDismissed()) {
+            <mat-card class="notice-card">
+              <mat-card-content>
+                <mat-icon>info</mat-icon>
+                <span>
+                  <strong>Note:</strong> if a player disconnects, they can reconnect at anytime using their same username and game code. The game cannot start with disconnected players!
+                </span>
+                <button
+                  mat-icon-button
+                  type="button"
+                  class="notice-close"
+                  aria-label="Dismiss disconnect note"
+                  (click)="disconnectNoteDismissed.set(true)"
+                >
+                  <mat-icon>close</mat-icon>
+                </button>
+              </mat-card-content>
+            </mat-card>
+          }
         } @else {
-          <mat-card style="max-width:640px;margin-bottom:20px;background:rgba(33,150,243,0.08);border-left:3px solid #2196f3;">
-            <mat-card-content style="display:flex;gap:10px;align-items:flex-start;padding:12px 16px;">
-              <mat-icon style="color:#2196f3;flex-shrink:0;">info</mat-icon>
-              <span style="font-size:0.9rem;line-height:1.4;">
-                <strong>Note:</strong> if you disconnect, you can reconnect at any time using the same name and game code.
-              </span>
-            </mat-card-content>
-          </mat-card>
+          @if (!disconnectNoteDismissed()) {
+            <mat-card class="notice-card">
+              <mat-card-content>
+                <mat-icon>info</mat-icon>
+                <span>
+                  <strong>Note:</strong> if you disconnect, you can reconnect at any time using the same name and game code.
+                </span>
+                <button
+                  mat-icon-button
+                  type="button"
+                  class="notice-close"
+                  aria-label="Dismiss disconnect note"
+                  (click)="disconnectNoteDismissed.set(true)"
+                >
+                  <mat-icon>close</mat-icon>
+                </button>
+              </mat-card-content>
+            </mat-card>
+          }
         }
         @if (gameState.isSpectator()) {
           <h2>Card Creation Phase</h2>
-          <p style="opacity:0.6;">You are a spectator. Waiting for all players to complete their cards...</p>
+          <p class="muted-copy">You are a spectator. Waiting for all players to complete their cards...</p>
           @if (gameState.isCreator() && allPlayersReady()) {
             <button mat-flat-button color="primary" (click)="onBeginGame()" [disabled]="isLoading()">
               Begin Game
@@ -111,9 +133,9 @@ const CARD_GROUPS: CardGroup[] = [
           }
         } @else if (isSubmitted()) {
           <h2>Cards Submitted!</h2>
-          <p style="opacity:0.6;">Waiting for other players to complete their cards...</p>
+          <p class="muted-copy">Waiting for other players to complete their cards...</p>
           @if (gameState.isCreator() && allPlayersReady()) {
-            <mat-card style="max-width:400px;margin-top:16px;">
+            <mat-card class="ready-card">
               <mat-card-content>All players are ready!</mat-card-content>
               <mat-card-actions>
                 <button mat-flat-button color="primary" (click)="onBeginGame()" [disabled]="isLoading()">
@@ -124,17 +146,17 @@ const CARD_GROUPS: CardGroup[] = [
           }
         } @else {
           <h2>Create Your Cards</h2>
-          <p style="opacity:0.6;">Fill in 2 cards for each category, then click Submit.</p>
+          <p class="muted-copy">Fill in 2 cards for each category, then click Submit.</p>
 
-          <form [formGroup]="cardsForm" (ngSubmit)="onSubmitCards()">
+          <form class="cards-form" [formGroup]="cardsForm" (ngSubmit)="onSubmitCards()">
             @for (group of cardGroups; track group.type) {
-              <div style="margin-bottom:28px;">
-                <h3 [style.color]="group.color" style="margin-bottom:4px;">
+              <div class="card-group">
+                <h3 [style.color]="group.color">
                   {{ group.label }} — {{ group.description }}
                 </h3>
-                <div style="display:flex;flex-direction:column;gap:12px;">
+                <div class="card-fields">
                   @for (i of [0,1]; track i) {
-                    <mat-form-field appearance="outline" style="width:100%;max-width:600px;">
+                    <mat-form-field appearance="outline">
                       <mat-label>{{ group.label }} #{{ i + 1 }}</mat-label>
                       <input matInput
                              [formControl]="getControl(group.type, i)"
@@ -149,7 +171,7 @@ const CARD_GROUPS: CardGroup[] = [
 
             <button mat-flat-button color="primary" type="submit" [disabled]="isLoading()">
               @if (isLoading()) {
-                <mat-spinner diameter="20" style="display:inline-block;vertical-align:middle;"></mat-spinner>
+                <mat-spinner diameter="20" class="inline-spinner"></mat-spinner>
               } @else {
                 Submit Cards
               }
@@ -159,6 +181,155 @@ const CARD_GROUPS: CardGroup[] = [
       </main>
     </div>
   `,
+  styles: [`
+    .share-card,
+    .notice-card {
+      width: min(100%, 640px);
+      margin-bottom: 16px;
+    }
+
+    .share-card {
+      background: linear-gradient(135deg, rgba(76,175,80,0.16), rgba(76,175,80,0.06)) !important;
+      border-left: 3px solid #4caf50 !important;
+    }
+
+    .share-card mat-card-content {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      padding: 14px 18px;
+      flex-wrap: wrap;
+    }
+
+    .share-icon {
+      color: #4caf50;
+      flex-shrink: 0;
+      font-size: 28px;
+      width: 28px;
+      height: 28px;
+    }
+
+    .share-copy {
+      flex: 1 1 220px;
+      min-width: 0;
+    }
+
+    .share-label {
+      margin-bottom: 2px;
+      color: var(--muted-text);
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .share-code {
+      color: #4caf50;
+      font-family: 'JetBrains Mono', 'Courier New', monospace;
+      font-size: clamp(1.35rem, 8vw, 1.9rem);
+      font-weight: 700;
+      letter-spacing: clamp(0.08em, 2vw, 0.18em);
+      overflow-wrap: normal;
+      word-break: keep-all;
+    }
+
+    .button-icon {
+      margin-right: 4px;
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+      vertical-align: middle;
+    }
+
+    .notice-card {
+      margin-bottom: 20px;
+      background: rgba(33,150,243,0.08) !important;
+      border-left: 3px solid #2196f3 !important;
+    }
+
+    .notice-card mat-card-content {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 12px 16px;
+    }
+
+    .notice-card mat-icon {
+      color: #2196f3;
+      flex-shrink: 0;
+    }
+
+    .notice-card span {
+      flex: 1;
+      min-width: 0;
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+
+    .notice-close {
+      flex: 0 0 auto;
+      width: 36px;
+      height: 36px;
+      min-height: 36px;
+      margin: -6px -8px -6px 2px;
+    }
+
+    .notice-close mat-icon {
+      color: rgba(224, 224, 224, 0.72);
+    }
+
+    .muted-copy {
+      color: var(--muted-text);
+    }
+
+    .ready-card {
+      width: min(100%, 400px);
+      margin-top: 16px;
+    }
+
+    .cards-form {
+      width: min(100%, 640px);
+    }
+
+    .card-group {
+      margin-bottom: 28px;
+    }
+
+    .card-group h3 {
+      margin: 0 0 4px;
+      line-height: 1.25;
+    }
+
+    .card-fields {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .card-fields mat-form-field {
+      width: 100%;
+    }
+
+    .inline-spinner {
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    @media (max-width: 760px) {
+      .share-card mat-card-content {
+        align-items: flex-start;
+        gap: 12px;
+        padding: 14px;
+      }
+
+      .share-card button {
+        width: 100%;
+      }
+
+      .notice-card mat-card-content {
+        padding: 12px;
+      }
+    }
+  `],
 })
 export class CardCreationComponent {
   readonly gameState = inject(GameStateService);
@@ -172,6 +343,7 @@ export class CardCreationComponent {
   readonly isLoading = signal(false);
   readonly isSubmitted = signal(false);
   readonly codeCopied = signal(false);
+  readonly disconnectNoteDismissed = signal(false);
 
   constructor() {
     // Show the rules modal once per game per browser session. The dialog can

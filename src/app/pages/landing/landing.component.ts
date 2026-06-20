@@ -28,18 +28,18 @@ import { GameStateService } from '../../core/services/game-state.service';
     MatSnackBarModule,
   ],
   template: `
-    <div class="full-center">
-      <h1 style="font-size:2.5rem;font-weight:900;letter-spacing:-1px;margin-bottom:8px;">
-        Retro Match
-      </h1>
-      <p style="opacity:0.5;margin-bottom:40px;">Change up your retro with this apples-to-apples style retro game!</p>
+    <div class="full-center landing-page">
+      <header class="landing-header">
+        <h1>Retro Match</h1>
+        <p>Change up your retro with this apples-to-apples style retro game!</p>
+      </header>
 
       @if (!activePanel()) {
-        <div style="display:flex;gap:24px;flex-wrap:wrap;justify-content:center;">
-          <mat-card style="width:280px;cursor:pointer;" (click)="activePanel.set('create')">
+        <div class="landing-actions">
+          <mat-card class="choice-card" (click)="activePanel.set('create')">
             <mat-card-header><mat-card-title>Create Game</mat-card-title></mat-card-header>
             <mat-card-content>
-              <p style="opacity:0.7;">Start a new session and invite your team.</p>
+              <p>Start a new session and invite your team.</p>
             </mat-card-content>
             <mat-card-actions>
               <button mat-flat-button color="primary" (click)="$event.stopPropagation(); activePanel.set('create')">
@@ -48,10 +48,10 @@ import { GameStateService } from '../../core/services/game-state.service';
             </mat-card-actions>
           </mat-card>
 
-          <mat-card style="width:280px;cursor:pointer;" (click)="activePanel.set('join')">
+          <mat-card class="choice-card" (click)="activePanel.set('join')">
             <mat-card-header><mat-card-title>Join Game</mat-card-title></mat-card-header>
             <mat-card-content>
-              <p style="opacity:0.7;">Enter a game code to join your team.</p>
+              <p>Enter a game code to join your team.</p>
             </mat-card-content>
             <mat-card-actions>
               <button mat-flat-button color="accent" (click)="$event.stopPropagation(); activePanel.set('join')">
@@ -63,25 +63,25 @@ import { GameStateService } from '../../core/services/game-state.service';
       }
 
       @if (activePanel() === 'create') {
-        <mat-card style="width:360px;">
+        <mat-card class="form-card">
           <mat-card-header>
             <mat-card-title>Create a Game</mat-card-title>
           </mat-card-header>
           <mat-card-content>
             <form [formGroup]="createForm" (ngSubmit)="onCreateGame()">
-              <mat-form-field appearance="outline" style="width:100%;margin-top:16px;">
+              <mat-form-field appearance="outline" class="form-field first-field">
                 <mat-label>Display Name</mat-label>
                 <input matInput formControlName="displayName" maxlength="50" autocomplete="off" />
                 <mat-error>Name is required (max 50 chars)</mat-error>
               </mat-form-field>
 
-              <div style="margin:12px 0 8px;">Join as:</div>
-              <mat-radio-group formControlName="role" style="display:flex;gap:24px;">
+              <div class="field-label">Join as:</div>
+              <mat-radio-group formControlName="role" class="role-options">
                 <mat-radio-button value="player">Player</mat-radio-button>
                 <mat-radio-button value="spectator">Spectator</mat-radio-button>
               </mat-radio-group>
 
-              <div style="display:flex;gap:12px;margin-top:20px;">
+              <div class="form-actions">
                 <button mat-stroked-button type="button" (click)="activePanel.set(null)">Back</button>
                 <button mat-flat-button color="primary" type="submit" [disabled]="isLoading()">
                   @if (isLoading()) {
@@ -97,26 +97,26 @@ import { GameStateService } from '../../core/services/game-state.service';
       }
 
       @if (activePanel() === 'join') {
-        <mat-card style="width:360px;">
+        <mat-card class="form-card">
           <mat-card-header>
             <mat-card-title>Join a Game</mat-card-title>
           </mat-card-header>
           <mat-card-content>
             <form [formGroup]="joinForm" (ngSubmit)="onJoinGame()">
-              <mat-form-field appearance="outline" style="width:100%;margin-top:16px;">
+              <mat-form-field appearance="outline" class="form-field first-field">
                 <mat-label>Game Code</mat-label>
                 <input matInput formControlName="gameCode" maxlength="6" autocomplete="off"
-                       style="text-transform:uppercase;letter-spacing:0.15em;" />
+                       class="game-code-input" />
                 <mat-error>6-character code required</mat-error>
               </mat-form-field>
 
-              <mat-form-field appearance="outline" style="width:100%;">
+              <mat-form-field appearance="outline" class="form-field">
                 <mat-label>Display Name</mat-label>
                 <input matInput formControlName="displayName" maxlength="50" autocomplete="off" />
                 <mat-error>Name is required (max 50 chars)</mat-error>
               </mat-form-field>
 
-              <div style="display:flex;gap:12px;margin-top:8px;">
+              <div class="form-actions compact">
                 <button mat-stroked-button type="button" (click)="activePanel.set(null)">Back</button>
                 <button mat-flat-button color="accent" type="submit" [disabled]="isLoading()">
                   @if (isLoading()) {
@@ -132,10 +132,180 @@ import { GameStateService } from '../../core/services/game-state.service';
       }
     </div>
 
-    <div style="position:fixed;bottom:16px;left:0;right:0;text-align:center;opacity:0.5;font-size:0.85rem;">
-      New to the game? <a href="https://www.youtube.com/watch?v=-k1uaXFupHI" target="_blank" rel="noopener noreferrer" style="color:inherit;">Watch how to play</a>
+    <div class="help-link">
+      New to the game? <a href="https://www.youtube.com/watch?v=-k1uaXFupHI" target="_blank" rel="noopener noreferrer">Watch how to play</a>
     </div>
   `,
+  styles: [`
+    .landing-page {
+      justify-content: center;
+      padding: clamp(44px, 9dvh, 76px) clamp(24px, 6vw, 48px) 96px;
+      text-align: center;
+    }
+
+    .landing-header {
+      width: min(100%, 640px);
+      margin-bottom: 44px;
+    }
+
+    .landing-header h1 {
+      margin: 0 0 8px;
+      font-size: clamp(2rem, 8vw, 2.5rem);
+      font-weight: 900;
+      line-height: 1.05;
+    }
+
+    .landing-header p,
+    .choice-card p {
+      margin: 0;
+      color: var(--muted-text);
+      line-height: 1.62;
+    }
+
+    .landing-header p {
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    .landing-actions {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 280px));
+      gap: 28px;
+      justify-content: center;
+      width: min(100%, 640px);
+    }
+
+    .choice-card {
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .choice-card mat-card-header {
+      padding: 20px 20px 8px;
+    }
+
+    .choice-card mat-card-title {
+      line-height: 1.25;
+    }
+
+    .choice-card mat-card-content {
+      padding: 0 20px 18px;
+    }
+
+    .choice-card mat-card-actions {
+      gap: 12px;
+      padding: 0 20px 20px;
+    }
+
+    .choice-card button,
+    .form-actions button {
+      padding-inline: 18px;
+    }
+
+    .form-card {
+      width: min(100%, 380px);
+      text-align: left;
+    }
+
+    .form-field {
+      width: 100%;
+    }
+
+    .first-field {
+      margin-top: 16px;
+    }
+
+    .field-label {
+      margin: 12px 0 8px;
+      color: var(--muted-text);
+    }
+
+    .role-options,
+    .form-actions {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .form-actions {
+      margin-top: 20px;
+    }
+
+    .form-actions.compact {
+      margin-top: 8px;
+    }
+
+    .game-code-input {
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+    }
+
+    .help-link {
+      position: fixed;
+      right: 16px;
+      bottom: max(16px, env(safe-area-inset-bottom));
+      left: 16px;
+      text-align: center;
+      color: rgba(224, 224, 224, 0.56);
+      font-size: 0.85rem;
+      pointer-events: none;
+    }
+
+    .help-link a {
+      color: inherit;
+      pointer-events: auto;
+    }
+
+    @media (max-width: 640px) {
+      .landing-page {
+        justify-content: flex-start;
+        padding: max(40px, env(safe-area-inset-top)) 24px 84px;
+      }
+
+      .landing-header {
+        margin-bottom: 28px;
+      }
+
+      .landing-actions {
+        grid-template-columns: 1fr;
+        gap: 18px;
+      }
+
+      .choice-card,
+      .form-card {
+        width: 100%;
+      }
+
+      .role-options {
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .form-actions {
+        gap: 10px;
+      }
+
+      .form-actions button {
+        flex: 1 1 130px;
+      }
+
+      .choice-card mat-card-header {
+        padding: 18px 18px 8px;
+      }
+
+      .choice-card mat-card-content {
+        padding: 0 18px 18px;
+      }
+
+      .choice-card mat-card-actions {
+        padding: 0 18px 18px;
+      }
+
+      .choice-card button {
+        width: 100%;
+      }
+    }
+  `],
 })
 export class LandingComponent {
   private readonly api = inject(ApiService);

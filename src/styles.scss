@@ -18,16 +18,64 @@ $theme: mat.define-theme((
   @include mat.all-component-themes($theme);
 }
 
-html, body {
-  height: 100%;
+:root {
+  --app-bg: #17151d;
+  --panel-bg: rgba(255, 255, 255, 0.06);
+  --panel-border: rgba(255, 255, 255, 0.12);
+  --muted-text: rgba(224, 224, 224, 0.68);
+  --content-max-width: 1040px;
+  --mobile-breakpoint: 760px;
+}
+
+html {
+  min-height: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  min-height: 100%;
   margin: 0;
   font-family: Inter, "Helvetica Neue", sans-serif;
-  background-color: #1a1a2e;
+  background-color: var(--app-bg);
   color: #e0e0e0;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
 * {
   box-sizing: border-box;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+button {
+  min-height: 44px;
+}
+
+p,
+li,
+h1,
+h2,
+h3,
+.mat-mdc-card,
+.mat-mdc-button,
+.mat-mdc-unelevated-button,
+.mat-mdc-outlined-button {
+  overflow-wrap: anywhere;
+}
+
+.mat-mdc-card {
+  border-radius: 8px !important;
+}
+
+.mat-mdc-card-content,
+.mat-mdc-card-header,
+.mat-mdc-card-actions {
+  min-width: 0;
 }
 
 .game-code-badge {
@@ -44,34 +92,41 @@ html, body {
   z-index: 1000;
   cursor: default;
   user-select: all;
+  max-width: calc(100vw - 32px);
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .page-container {
-  display: flex;
-  height: 100vh;
-  overflow: hidden;
+  display: grid;
+  grid-template-columns: minmax(200px, 240px) minmax(0, 1fr);
+  min-height: 100dvh;
+  width: 100%;
 }
 
 .sidebar {
   width: 240px;
-  min-width: 200px;
+  min-width: 0;
+  height: 100dvh;
+  position: sticky;
+  top: 0;
   background: rgba(255,255,255,0.05);
   border-right: 1px solid rgba(255,255,255,0.1);
   padding: 16px;
   overflow-y: auto;
-  flex-shrink: 0;
 }
 
 .main-content {
-  flex: 1;
-  overflow-y: auto;
+  width: 100%;
+  min-width: 0;
   padding: 24px;
   padding-top: 72px; /* room for game-code badge */
+  overflow-x: hidden;
 }
 
 .card-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
   gap: 16px;
   margin-top: 16px;
 }
@@ -81,12 +136,13 @@ html, body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
+  min-height: 100dvh;
+  width: 100%;
   padding: 24px;
 }
 
 .adjective-banner {
-  font-size: 2rem;
+  font-size: clamp(1.35rem, 3vw, 2rem);
   font-weight: 700;
   text-align: center;
   margin-bottom: 24px;
@@ -94,6 +150,7 @@ html, body {
   background: linear-gradient(135deg, rgba(103,58,183,0.3), rgba(0,188,212,0.3));
   border-radius: 12px;
   border: 1px solid rgba(255,255,255,0.15);
+  line-height: 1.2;
 }
 
 .player-item {
@@ -131,4 +188,85 @@ html, body {
 mat-card {
   background: rgba(255,255,255,0.06) !important;
   border: 1px solid rgba(255,255,255,0.1) !important;
+}
+
+@media (max-width: 760px) {
+  .game-code-badge {
+    position: sticky;
+    top: max(8px, env(safe-area-inset-top));
+    right: auto;
+    bottom: auto;
+    width: max-content;
+    margin: 10px max(12px, env(safe-area-inset-right)) 0 auto;
+    padding: 6px 10px;
+    font-size: 0.9rem;
+    letter-spacing: 0.16em;
+    z-index: 10;
+  }
+
+  .page-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100dvh;
+  }
+
+  .sidebar {
+    position: relative;
+    top: auto;
+    width: 100%;
+    height: auto;
+    max-height: none;
+    padding: 10px 12px;
+    border-right: 0;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+  }
+
+  .sidebar-header {
+    margin-bottom: 8px;
+  }
+
+  .sidebar .player-item {
+    display: inline-flex;
+    width: auto;
+    min-width: 132px;
+    max-width: 220px;
+    margin-right: 8px;
+    padding: 8px 10px;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px;
+    background: rgba(255,255,255,0.04);
+    vertical-align: top;
+  }
+
+  .sidebar .player-name {
+    max-width: 116px;
+  }
+
+  .main-content {
+    padding: 18px 14px 80px;
+  }
+
+  .full-center {
+    justify-content: flex-start;
+    min-height: 100dvh;
+    padding: max(24px, env(safe-area-inset-top)) 16px max(24px, env(safe-area-inset-bottom));
+  }
+
+  .card-grid {
+    gap: 12px;
+  }
+
+  .adjective-banner {
+    margin-bottom: 18px;
+    padding: 14px 16px;
+    border-radius: 8px;
+  }
+
+  .mat-mdc-card-actions,
+  .mat-mdc-dialog-actions {
+    flex-wrap: wrap;
+  }
 }

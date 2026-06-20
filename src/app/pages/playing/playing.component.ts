@@ -58,21 +58,21 @@ const CARD_TYPE_COLORS: Record<string, string> = {
           <!-- === SUBMITTING PHASE === -->
           @if (currentRound()!.phase === 'submitting') {
             @if (gameState.isSpectator()) {
-              <p style="opacity:0.6;text-align:center;margin-top:32px;">
+              <p class="state-copy spacious">
                 You are spectating. Waiting for all players to submit their cards...
               </p>
             } @else if (!hasSubmittedThisRound()) {
-              <h3 style="margin-bottom:16px;">Choose a card to play:</h3>
+              <h3 class="section-title">Choose a card to play:</h3>
               <div class="card-grid">
                 @for (card of gameState.myCards(); track card.id) {
-                  <mat-card style="cursor:pointer;" (click)="onPlayCard(card)">
+                  <mat-card class="action-card" (click)="onPlayCard(card)">
                     <mat-card-header>
                       <mat-card-subtitle [style.color]="cardTypeColor(card.card_type)">
                         {{ card.card_type | titlecase }}
                       </mat-card-subtitle>
                     </mat-card-header>
                     <mat-card-content>
-                      <p style="font-size:1rem;line-height:1.5;">{{ card.text }}</p>
+                      <p class="card-text">{{ card.text }}</p>
                     </mat-card-content>
                     <mat-card-actions>
                       <button mat-flat-button color="accent" [disabled]="isLoading()">Play</button>
@@ -81,7 +81,7 @@ const CARD_TYPE_COLORS: Record<string, string> = {
                 }
               </div>
             } @else {
-              <p style="opacity:0.6;text-align:center;margin-top:32px;">
+              <p class="state-copy spacious">
                 Card submitted! Waiting for others...
               </p>
             }
@@ -90,10 +90,10 @@ const CARD_TYPE_COLORS: Record<string, string> = {
           <!-- === VOTING PHASE === -->
           @if (currentRound()!.phase === 'voting') {
             @if (gameState.isSpectator()) {
-              <p style="opacity:0.6;text-align:center;margin-top:16px;">
+              <p class="state-copy">
                 Spectating — players are voting...
               </p>
-              <div class="card-grid" style="margin-top:16px;">
+              <div class="card-grid">
                 @for (sub of currentRound()!.revealed_submissions ?? []; track sub.submission_id) {
                   <mat-card>
                     <mat-card-header>
@@ -102,25 +102,25 @@ const CARD_TYPE_COLORS: Record<string, string> = {
                       </mat-card-subtitle>
                     </mat-card-header>
                     <mat-card-content>
-                      <p style="font-size:1rem;line-height:1.5;">{{ sub.card_text }}</p>
+                      <p class="card-text">{{ sub.card_text }}</p>
                     </mat-card-content>
                   </mat-card>
                 }
               </div>
             } @else if (!hasVotedThisRound()) {
-              <h3 style="text-align:center;margin-bottom:16px;">
+              <h3 class="section-title centered">
                 Vote for the most <span style="color:#ffd700;">{{ currentRound()!.adjective }}</span> card:
               </h3>
               <div class="card-grid">
                 @for (sub of currentRound()!.revealed_submissions ?? []; track sub.submission_id) {
-                  <mat-card style="cursor:pointer;transition:transform 0.15s;" (click)="onVote(sub)">
+                  <mat-card class="action-card" (click)="onVote(sub)">
                     <mat-card-header>
                       <mat-card-subtitle [style.color]="cardTypeColor(sub.card_type)">
                         {{ sub.card_type | titlecase }}
                       </mat-card-subtitle>
                     </mat-card-header>
                     <mat-card-content>
-                      <p style="font-size:1rem;line-height:1.5;">{{ sub.card_text }}</p>
+                      <p class="card-text">{{ sub.card_text }}</p>
                     </mat-card-content>
                     <mat-card-actions>
                       <button mat-flat-button color="primary" [disabled]="isLoading()">
@@ -131,11 +131,11 @@ const CARD_TYPE_COLORS: Record<string, string> = {
                 }
               </div>
             } @else {
-              <p style="text-align:center;opacity:0.7;margin-top:32px;">
-                <mat-icon style="vertical-align:middle;margin-right:8px;">how_to_vote</mat-icon>
+              <p class="state-copy spacious">
+                <mat-icon class="inline-icon">how_to_vote</mat-icon>
                 Vote cast! Waiting for all votes to come in...
               </p>
-              <div class="card-grid" style="margin-top:24px;">
+              <div class="card-grid voted-grid">
                 @for (sub of currentRound()!.revealed_submissions ?? []; track sub.submission_id) {
                   <mat-card [style.opacity]="votedCardId() === sub.card_id ? '1' : '0.5'">
                     <mat-card-header>
@@ -157,9 +157,9 @@ const CARD_TYPE_COLORS: Record<string, string> = {
 
           <!-- === COMPLETE PHASE — show winner(s) === -->
           @if (currentRound()!.phase === 'complete') {
-            <div style="text-align:center;margin-bottom:24px;padding:16px;background:rgba(255,215,0,0.1);border-radius:8px;">
-              <mat-icon style="color:#ffd700;vertical-align:middle;font-size:36px;">emoji_events</mat-icon>
-              <div style="font-weight:700;font-size:1.3rem;margin-top:8px;">
+            <div class="winner-callout">
+              <mat-icon>emoji_events</mat-icon>
+              <div>
                 @if (winnerNames().length === 1) {
                   {{ winnerNames()[0] }} wins this round!
                 } @else if (winnerNames().length > 1) {
@@ -183,23 +183,22 @@ const CARD_TYPE_COLORS: Record<string, string> = {
                     </mat-card-subtitle>
                   </mat-card-header>
                   <mat-card-content>
-                    <p style="font-size:1rem;line-height:1.5;">{{ sub.card_text }}</p>
+                    <p class="card-text">{{ sub.card_text }}</p>
                   </mat-card-content>
                 </mat-card>
               }
             </div>
 
             @if (canAdvance()) {
-              <div style="text-align:center;margin-top:32px;">
+              <div class="round-actions">
                 <button
                   mat-flat-button
                   color="primary"
                   (click)="onAdvanceRound()"
                   [disabled]="isLoading()"
-                  style="font-size:1.1rem;padding:8px 32px;"
                 >
                   @if (isLoading()) {
-                    <mat-spinner diameter="20" style="display:inline-block;vertical-align:middle;"></mat-spinner>
+                    <mat-spinner diameter="20" class="inline-spinner"></mat-spinner>
                   } @else if (isLastRound()) {
                     Show Final Results
                   } @else {
@@ -208,7 +207,7 @@ const CARD_TYPE_COLORS: Record<string, string> = {
                 </button>
               </div>
             } @else {
-              <p style="text-align:center;opacity:0.5;margin-top:24px;">
+              <p class="state-copy waiting-copy">
                 Waiting for the host to
                 @if (isLastRound()) {
                   show final results...
@@ -223,9 +222,109 @@ const CARD_TYPE_COLORS: Record<string, string> = {
     </div>
   `,
   styles: [`
+    .section-title {
+      margin: 0 0 16px;
+      line-height: 1.25;
+    }
+
+    .centered {
+      text-align: center;
+    }
+
+    .state-copy {
+      margin: 16px auto 0;
+      color: var(--muted-text);
+      text-align: center;
+      line-height: 1.45;
+    }
+
+    .state-copy.spacious {
+      margin-top: 32px;
+    }
+
+    .waiting-copy {
+      margin-top: 24px;
+      opacity: 0.75;
+    }
+
+    .action-card {
+      cursor: pointer;
+      transition: transform 0.15s, border-color 0.15s;
+    }
+
+    @media (hover: hover) {
+      .action-card:hover {
+        transform: translateY(-2px);
+        border-color: rgba(255,255,255,0.22) !important;
+      }
+    }
+
+    .card-text {
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    .inline-icon {
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+
+    .voted-grid {
+      margin-top: 24px;
+    }
+
+    .winner-callout {
+      margin-bottom: 24px;
+      padding: 16px;
+      text-align: center;
+      background: rgba(255,215,0,0.1);
+      border-radius: 8px;
+    }
+
+    .winner-callout mat-icon {
+      color: #ffd700;
+      vertical-align: middle;
+      font-size: 36px;
+      width: 36px;
+      height: 36px;
+    }
+
+    .winner-callout div {
+      margin-top: 8px;
+      font-size: clamp(1.08rem, 4vw, 1.3rem);
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .round-actions {
+      margin-top: 32px;
+      text-align: center;
+    }
+
+    .round-actions button {
+      padding: 8px 32px;
+      font-size: 1.1rem;
+    }
+
+    .inline-spinner {
+      display: inline-block;
+      vertical-align: middle;
+    }
+
     .winning-card {
       border: 2px solid #ffd700 !important;
       box-shadow: 0 0 16px rgba(255, 215, 0, 0.3);
+    }
+
+    @media (max-width: 760px) {
+      .state-copy.spacious {
+        margin-top: 24px;
+      }
+
+      .round-actions button {
+        width: 100%;
+      }
     }
   `],
 })
