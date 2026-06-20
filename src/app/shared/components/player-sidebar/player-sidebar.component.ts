@@ -52,10 +52,11 @@ import { PlayerSummary, SubmissionStatus, VoteStatus, GamePhase, RoundPhase } fr
             mat-icon-button
             type="button"
             class="remove-player-btn"
-            matTooltip="Remove player"
+            aria-label="Kick player"
+            matTooltip="Kick player"
             (click)="removePlayer.emit(player.id)"
           >
-            <mat-icon style="font-size:18px;color:#f44336;">delete</mat-icon>
+            <mat-icon class="kick-player-icon">person_remove</mat-icon>
           </button>
         }
       </div>
@@ -97,6 +98,13 @@ import { PlayerSummary, SubmissionStatus, VoteStatus, GamePhase, RoundPhase } fr
       line-height: 28px;
       padding: 0;
       margin-left: 4px;
+    }
+    .kick-player-icon {
+      color: #f44336;
+      font-size: 19px;
+      height: 19px;
+      width: 19px;
+      line-height: 19px;
     }
   `],
 })
